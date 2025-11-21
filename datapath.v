@@ -25,7 +25,7 @@ module datapath(
 
   localparam WIDTH = 32;
 
-  // Internal control signals for pipeline stages
+  // Señales de control para cada etapa del pipeline
   wire [1:0] ResultSrcE, ResultSrcM, ResultSrcW;
   wire ALUSrcE;
   wire RegWriteE, RegWriteM, RegWriteW;
@@ -35,7 +35,7 @@ module datapath(
   wire [2:0] ALUControlE;
   wire ZeroE;
 
-  // Se?ales internas de cada etapa del pipeline
+  // Señales internas de cada etapa del pipeline
   // Fetch
   wire [31:0] PCPlus4F, PCNextF;
 
@@ -60,22 +60,22 @@ module datapath(
   wire [31:0] ResultW;
   wire [4:0] RdW;
 
-  // Forwarding signals
+  // Señales de forwarding (adelantamiento de datos)
   wire [1:0] ForwardAE, ForwardBE;
   wire [31:0] SrcAE_forwarded, SrcBE_forwarded;
   
-  // Stalling and flushing signals
+  // Señales de stall y flush
   wire StallF, StallD, FlushD, FlushE;
   
-  // Control hazard signals
-  wire PCSrcE;  // Decisi?n de salto en EX (se calcular? despu?s de ALU)
+  // Señal de control de salto
+  wire PCSrcE;  // Decisión de salto en EX (se calcula después de ALU)
 
-  // ===== FETCH =====
-  // PC register con enable para stalling
+  // ===== ETAPA FETCH =====
+  // Registro del PC con enable para stalling
   flopr #(WIDTH) pcreg(
     .clk(clk),
     .reset(reset),
-    .StallF(StallF),      // Stall cuando StallF = 1
+    .StallF(StallF),      // Detener cuando StallF = 1
     .d(PCNextF),
     .q(PCF)
   );
@@ -96,12 +96,12 @@ module datapath(
     .y(PCNextF)
   );
 
-  // IF/ID con soporte de stalling y flushing
+  // Registro IF/ID con soporte de stalling y flushing
   IF_ID ifid(
     .clk(clk),
     .reset(reset),
-    .stallD(StallD),    // Stall desde hazard unit
-    .flushD(FlushD),    // Flush desde hazard unit (control hazards)
+    .stallD(StallD),    // Detener desde hazard unit
+    .flushD(FlushD),    // Limpiar desde hazard unit (control hazards)
     .InstrF(InstrF),
     .PCF(PCF),
     .PCPlus4F(PCPlus4F),
@@ -110,7 +110,8 @@ module datapath(
     .PCPlus4D(PCPlus4D)
   );
 
-  // ===== DECODE =====
+  // ===== ETAPA DECODE =====
+  // Banco de registros
   regfile rf(
     .clk(clk),
     .we3(RegWriteW),
@@ -198,7 +199,7 @@ module datapath(
     .lwStall(lwStall)       // Exportar lwStall
   );
 
-  // Mux para Forwarding en SrcA
+  // Mux para forwarding en SrcA
   // ForwardAE: 00 = RD1E, 01 = ResultW, 10 = ALUResultM
   mux3 #(WIDTH) forwardAmux(
     .d0(RD1E),           // Sin forwarding
@@ -208,7 +209,7 @@ module datapath(
     .y(SrcAE_forwarded)
   );
 
-  // Mux para Forwarding en SrcB (antes del mux de immediate)
+  // Mux para forwarding en SrcB (antes del mux de immediate)
   // ForwardBE: 00 = RD2E, 01 = ResultW, 10 = ALUResultM
   mux3 #(WIDTH) forwardBmux(
     .d0(RD2E),           // Sin forwarding
@@ -218,7 +219,7 @@ module datapath(
     .y(SrcBE_forwarded)
   );
 
-  // Asignaciones para ALU
+  // Asignar valores forwardeados a la ALU
   assign SrcAE = SrcAE_forwarded;
   assign WriteDataE = SrcBE_forwarded;  // Para stores, usar valor forwardeado
 
@@ -229,7 +230,7 @@ module datapath(
     .y(SrcBE)
   );
 
-  // ALU entero
+  // Unidad Aritmético-Lógica
   alu alu(
     .a(SrcAE),
     .b(SrcBE),
@@ -245,16 +246,16 @@ module datapath(
     .y(PCTargetE)
   );
 
-  // C?lculo de PCSrc en EX (despu?s de ALU, cuando ZeroE est? disponible)
+  // Calcular PCSrc en EX (después de ALU, cuando ZeroE está disponible)
   // PCSrcE = 1 cuando:
   //   - Branch tomado: BranchE && ZeroE
   //   - Jump incondicional: JumpE
-  // Nota: Al inicio, BranchE y JumpE son 0 (desde ID_EX reset), as? que PCSrcE = 0
+  // Nota: Al inicio, BranchE y JumpE son 0 (desde ID_EX reset), así que PCSrcE = 0
   assign PCSrcE = (BranchE && ZeroE) || JumpE;
 
-  // Actualizar FlushD y FlushE con el PCSrcE real (despu?s de ALU)
-  assign FlushD = PCSrcE;  // Flush ID cuando hay salto tomado
-  assign FlushE = lwStall | PCSrcE;  // Flush EX en load-use o salto tomado
+  // Actualizar FlushD y FlushE con el PCSrcE real (después de ALU)
+  assign FlushD = PCSrcE;  // Limpiar ID cuando hay salto tomado
+  assign FlushE = lwStall | PCSrcE;  // Limpiar EX en load-use o salto tomado
 
 
   // EX/MEM (sin se?ales FP)
@@ -303,8 +304,8 @@ module datapath(
     .InstruW()  // Output no usado
   );
 
-  // ===== WRITEBACK =====
-  // Mux para resultado entero
+  // ===== ETAPA WRITEBACK =====
+  // Mux para seleccionar el resultado final
   mux3 #(WIDTH) resultmux(
     .d0(ALUResultW),
     .d1(ReadDataW),

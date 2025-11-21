@@ -4,7 +4,7 @@ module top(input  clk, reset,
   
   wire [31:0] PC, Instr, ReadData; 
   
-  // instantiate processor and memories
+  // Instanciar el procesador pipeline
   riscvpipeline rvpipeline(
     .clk(clk), 
     .reset(reset), 
@@ -16,11 +16,13 @@ module top(input  clk, reset,
     .ReadDataM(ReadData)
   ); 
 
+  // Memoria de instrucciones
   imem imem(
     .a(PC), 
     .rd(Instr)
   ); 
-
+  
+  // Memoria de datos
   dmem dmem(
     .clk(clk), 
     .we(MemWrite), 

@@ -1,18 +1,18 @@
-// Hazard Unit con Forwarding Logic, Load-Use Stall Detection y Control Hazards
+// Unidad de detección de hazards con forwarding, stalling y flushing
 module hazard_unit(
-  // Entradas desde Decode (ID)
+  // Entradas desde la etapa Decode (ID)
   input [4:0] Rs1D, Rs2D,
   
-  // Entradas desde Execute (EX)
+  // Entradas desde la etapa Execute (EX)
   input [4:0] Rs1E, Rs2E, RdE,
   input [1:0] ResultSrcE,  // Para detectar lw (ResultSrcE[0] = 1)
   input PCSrcE,            // Para detectar saltos tomados
   
-  // Entradas desde Memory (MEM)
+  // Entradas desde la etapa Memory (MEM)
   input [4:0] RdM,
   input RegWriteM,
   
-  // Entradas desde Writeback (WB)
+  // Entradas desde la etapa Writeback (WB)
   input [4:0] RdW,
   input RegWriteW,
   
@@ -21,11 +21,11 @@ module hazard_unit(
   output [1:0] ForwardBE,
   
   // Salidas de control de stalling y flushing
-  output StallF,   // Stall Fetch stage
-  output StallD,   // Stall Decode stage
-  output FlushD,   // Flush Decode stage (control hazards)
-  output FlushE,   // Flush Execute stage (data hazards y control hazards)
-  output lwStall   // Load-use hazard detectado (para uso externo)
+  output StallF,   // Detener etapa Fetch
+  output StallD,   // Detener etapa Decode
+  output FlushD,   // Limpiar etapa Decode (control hazards)
+  output FlushE,   // Limpiar etapa Execute (data hazards y control hazards)
+  output lwStall   // Hazard load-use detectado (para uso externo)
 );
 
   // ===== FORWARDING LOGIC =====
@@ -36,7 +36,7 @@ module hazard_unit(
     ((Rs1E == RdM) && RegWriteM && (Rs1E != 5'b0)) ? 2'b10 :
     // Forwarding desde MEM/WB
     ((Rs1E == RdW) && RegWriteW && (Rs1E != 5'b0)) ? 2'b01 :
-    // Sin forwarding, usar valor del register file
+    // Sin forwarding, usar valor del banco de registros
     2'b00;
 
   // Forwarding para SrcB (Rs2E)
@@ -46,7 +46,7 @@ module hazard_unit(
     ((Rs2E == RdM) && RegWriteM && (Rs2E != 5'b0)) ? 2'b10 :
     // Forwarding desde MEM/WB
     ((Rs2E == RdW) && RegWriteW && (Rs2E != 5'b0)) ? 2'b01 :
-    // Sin forwarding, usar valor del register file
+    // Sin forwarding, usar valor del banco de registros
     2'b00;
 
   // ===== LOAD-USE HAZARD DETECTION =====
@@ -74,9 +74,9 @@ module hazard_unit(
   //    - StallF = 0: PC avanza al target del salto
   //    - StallD = 0: ID acepta nueva instrucci�n
   
-  assign StallF = lwStall;           // Solo stall en load-use
-  assign StallD = lwStall;           // Solo stall en load-use
-  assign FlushD = PCSrcE;            // Flush ID cuando hay salto tomado
-  assign FlushE = lwStall | PCSrcE;  // Flush EX en load-use o salto tomado
+  assign StallF = lwStall;           // Solo detener en load-use
+  assign StallD = lwStall;           // Solo detener en load-use
+  assign FlushD = PCSrcE;            // Limpiar ID cuando hay salto tomado
+  assign FlushE = lwStall | PCSrcE;  // Limpiar EX en load-use o salto tomado
 
 endmodule
