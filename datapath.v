@@ -12,7 +12,7 @@ module datapath(
   input  BranchD,
   input  [2:0]  ALUControlD,
   input  ALUSrcD,
-  input  [2:0]  ImmSrcD, 
+  input  [2:0]  ImmSrcD,   
   input  [31:0] InstrF,
   input  [31:0] ReadDataM, // Proviene de fuera del módulo datapath, es decir, si dmem lee datos de memoria, produce ReadData
   // Señales FP desde controller
@@ -54,7 +54,7 @@ module datapath(
   wire [31:0] PCPlus4F, PCNextF; //PCNextF es siguiente instruccion
 
   // Decode
-  wire [31:0] PCD, PCPlus4D; 
+  wire [31:0] PCD, PCPlus4D;
   wire [31:0] RD1D, RD2D, ImmExtD;
   wire [31:0] FRD1D, FRD2D;  // Lecturas del FP register file
 
