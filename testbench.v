@@ -4,6 +4,9 @@ module testbench;
   wire [31:0]  WriteData;
   wire [31:0]  DataAdr;
   wire         MemWrite;
+  // Señales FP
+  wire         FPMemWriteM;
+  wire [31:0]  FWriteDataM;
   
   // Instanciar el procesador a probar
   top dut(
@@ -11,7 +14,9 @@ module testbench;
     .reset(reset), 
     .WriteData(WriteData), 
     .DataAdr(DataAdr), 
-    .MemWrite(MemWrite)
+    .MemWrite(MemWrite),
+    .FPMemWriteM(FPMemWriteM),
+    .FWriteDataM(FWriteDataM)
   );
 
   // Guardar todas las señales en el archivo de waveform
@@ -48,9 +53,12 @@ module testbench;
       cycle_count = cycle_count + 1;
       
       // Mostrar informacion cada 10 ciclos o cuando hay escritura a memoria
-      if (cycle_count % 10 == 0 || MemWrite) begin
-        if (MemWrite) begin
-          $display("Ciclo %0d: Escritura a memoria - Direccion=0x%08h (%0d), Dato=0x%08h (%0d)", 
+      if (cycle_count % 10 == 0 || MemWrite || FPMemWriteM) begin
+        if (FPMemWriteM) begin
+          $display("Ciclo %0d: Escritura FP a memoria - Direccion=0x%08h (%0d), Dato FP=0x%08h", 
+                   cycle_count, DataAdr, DataAdr, FWriteDataM);
+        end else if (MemWrite) begin
+          $display("Ciclo %0d: Escritura entera a memoria - Direccion=0x%08h (%0d), Dato=0x%08h (%0d)", 
                    cycle_count, DataAdr, DataAdr, WriteData, WriteData);
         end else begin
           $display("Ciclo %0d: Ejecutando...", cycle_count);

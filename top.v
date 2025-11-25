@@ -1,6 +1,9 @@
 module top(input  clk, reset, 
            output [31:0] WriteData, DataAdr, 
-           output MemWrite);
+           output MemWrite,
+           // Salidas FP
+           output FPMemWriteM,
+           output [31:0] FWriteDataM);
   
   wire [31:0] PC, Instr, ReadData; 
   
@@ -13,7 +16,10 @@ module top(input  clk, reset,
     .MemWriteM(MemWrite), 
     .ALUResultM(DataAdr), 
     .WriteDataM(WriteData), 
-    .ReadDataM(ReadData)
+    .ReadDataM(ReadData),
+    // Salidas FP
+    .FPMemWriteM(FPMemWriteM),
+    .FWriteDataM(FWriteDataM)
   ); 
 
   // Memoria de instrucciones

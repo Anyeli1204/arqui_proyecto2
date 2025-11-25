@@ -1,0 +1,38 @@
+==========================================
+COMANDOS PARA EJECUTAR EN VIVADO TCL CONSOLE
+==========================================
+
+PASO 1: Cambiar al directorio del proyecto
+-------------------------------------------
+cd C:/Users/anyel/OneDrive/Desktop/pipeline
+
+PASO 2: Ejecutar el script de configuración
+--------------------------------------------
+source setup_vivado_fp.tcl
+
+Esto creará automáticamente:
+- El proyecto en C:/VivadoProjects/riscv_pipeline_fp/
+- Agregará todos los archivos necesarios
+- Configurará la simulación
+
+PASO 3: Después de ejecutar el script, ejecutar simulación
+-----------------------------------------------------------
+En el menú: Run Simulation -> Run Behavioral Simulation
+O usar el atajo: Ctrl + Alt + B
+
+==========================================
+ALTERNATIVA: Crear proyecto manualmente
+==========================================
+
+Si prefieres crear el proyecto manualmente:
+
+1. File -> Project -> New Project
+2. Project Name: riscv_pipeline_fp
+3. Project Location: C:/VivadoProjects/riscv_pipeline_fp
+4. Project Type: RTL Project
+5. Add Sources: Agregar TODOS los archivos .v
+6. Add Simulation Sources: Agregar testbench.v
+7. Default Part: Cualquier FPGA (ej: xc7a35tcpg236-1)
+
+==========================================
+

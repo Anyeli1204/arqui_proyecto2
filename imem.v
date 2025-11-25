@@ -10,7 +10,8 @@ module imem(input  [31:0] a,
         RAM[i] = 32'h00000013;  // NOP instruction
       
       // Cargar programa desde archivo
-      $readmemh("riscvtest.txt", RAM); 
+      // Cambiar "riscvtest.txt" por "riscvtest_fp.txt" para probar instrucciones FP
+      $readmemh("riscvtest_fp.txt", RAM); 
   end
 
   assign rd = RAM[a[31:2]]; // word aligned
