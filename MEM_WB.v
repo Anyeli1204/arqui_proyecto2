@@ -1,13 +1,19 @@
-// MEM/WB Pipeline Register (sin floating point)
+// MEM/WB Pipeline Register (con soporte para floating point)
 module MEM_WB(input clk, reset,
                  input [31:0] ALUResultM, ReadDataM, PCPlus4M,
                  input [4:0] RdM,
                  input RegWriteM,
                  input [1:0] ResultSrcM,
+                 // Señales FP
+                 input FPRegWriteM,
+                 input [31:0] FALUResultM,  // Resultado ALU FP desde MEM
                  output reg [31:0] ALUResultW, ReadDataW, PCPlus4W,
                  output reg [4:0] RdW,
                  output reg RegWriteW,
-                 output reg [1:0] ResultSrcW);
+                 output reg [1:0] ResultSrcW,
+                 // Salidas FP
+                 output reg FPRegWriteW,
+                 output reg [31:0] FALUResultW);  // Resultado ALU FP hacia WB
 
   always @(posedge clk or posedge reset) begin
     if (reset) begin
@@ -17,6 +23,8 @@ module MEM_WB(input clk, reset,
       RdW <= 0;
       RegWriteW <= 0;
       ResultSrcW <= 0;
+      FPRegWriteW <= 0;
+      FALUResultW <= 0;
     end else begin
       ALUResultW <= ALUResultM;
       ReadDataW <= ReadDataM;
@@ -24,6 +32,8 @@ module MEM_WB(input clk, reset,
       RdW <= RdM;
       RegWriteW <= RegWriteM;
       ResultSrcW <= ResultSrcM;
+      FPRegWriteW <= FPRegWriteM;
+      FALUResultW <= FALUResultM;
     end
   end
 endmodule
