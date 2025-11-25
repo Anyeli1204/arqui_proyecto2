@@ -1,0 +1,97 @@
+==========================================
+PASOS RÁPIDOS PARA CREAR PROYECTO EN VIVADO
+==========================================
+
+OPCIÓN 1: Crear proyecto manualmente (MÁS FÁCIL)
+-------------------------------------------------
+
+1. Abre Vivado
+
+2. File → Project → New Project
+
+3. Asistente:
+   - Project Name: riscv_pipeline_fp
+   - Project Location: C:/VivadoProjects/riscv_pipeline_fp
+   - ✅ Create project subdirectory
+   - Next
+
+4. Project Type:
+   - ✅ RTL Project
+   - ✅ Do not specify sources at this time
+   - Next
+
+5. Default Part:
+   - Busca: xc7a35
+   - Selecciona: xc7a35tcpg236-1 (o cualquier otro)
+   - Next → Finish
+
+6. Agregar archivos fuente:
+   - Clic derecho en "Design Sources" → Add Sources...
+   - Add or create design sources → Next
+   - Add Files → Selecciona TODOS los .v:
+     * top.v
+     * riscvpipeline.v
+     * datapath.v
+     * controller_fp.v ⚠️ IMPORTANTE
+     * fpdec.v
+     * hazard_unit.v
+     * maindec.v
+     * aludec.v
+     * regfile.v
+     * fregfile.v
+     * extend.v
+     * alu.v
+     * alu_fp_full.v
+     * adder.v
+     * imem.v
+     * dmem.v
+     * flopr.v
+     * mux2.v
+     * mux3.v
+     * mux_df.v
+     * IF_ID.v
+     * ID_EX.v
+     * EX_MEM.v
+     * MEM_WB.v
+   - Finish
+
+7. Agregar testbench:
+   - Clic derecho en "Simulation Sources" → Add Sources...
+   - Add or create simulation sources → Next
+   - Add Files → Selecciona: testbench.v
+   - Finish
+
+8. Configurar testbench como top:
+   - Clic derecho en testbench.v → Set as Top
+
+9. Ejecutar simulación:
+   - Run Simulation → Run Behavioral Simulation
+   - O atajo: Ctrl + Alt + B
+
+==========================================
+
+OPCIÓN 2: Usar TCL Console (MÁS RÁPIDO)
+----------------------------------------
+
+1. Abre Vivado
+
+2. En la parte INFERIOR, busca "Tcl Console"
+
+3. Escribe estos comandos (uno por uno, presiona Enter):
+   cd C:/Users/anyel/OneDrive/Desktop/pipeline
+   source setup_vivado_fp.tcl
+
+4. Espera a que termine (verás mensajes en la consola)
+
+5. Ejecutar simulación:
+   - Run Simulation → Run Behavioral Simulation
+
+==========================================
+
+NOTA IMPORTANTE:
+- Los scripts TCL se ejecutan DENTRO de Vivado, NO en Git Bash
+- Git Bash es solo para Git, no para Vivado
+- Usa la Tcl Console de Vivado (parte inferior de la ventana)
+
+==========================================
+
